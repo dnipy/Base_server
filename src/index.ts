@@ -1,18 +1,52 @@
 import express, { Express } from "express";
-import dotenv from "dotenv";
+import cluster from "cluster";
+import os from 'os'
 import { I_Request_Custom , I_Response_Custom } from '@type'
-import { morganMiddleware } from "./middlewares"
+import { NODE_ENV_CONFIG } from "./configs";
+import { AppMiddleWaresInit } from "./middlewares"
+import api_router from "./routes/api";
+import { Authorize } from "./middlewares/authorize.middleware";
+const numCPUs = os.cpus().length;
 
-const NODE_ENV = process.env.NODE_ENV;
-dotenv.config({path : `${__dirname}/env/${NODE_ENV}/.env.${NODE_ENV}`})
- 
-const app: Express = express();
+if (cluster.isPrimary) {
+  console.log(`+Master(Primary) is running with process_id = (${process.pid}) `);
 
-app.use(morganMiddleware)
-app.get("/", (req: I_Request_Custom, res: I_Response_Custom) => {
-  res.send("Express + TypeScript Server");
-});
+  // Fork workers
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
 
-app.listen(process.env.PORT, () => {
-  console.log(`[server]: Server is running at http://localhost:${process.env.PORT}`);
-});
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died`);
+  });
+} else {
+  NODE_ENV_CONFIG()
+  .then(()=>{
+    const app: Express = express();
+
+
+    //* CONFIGs AND MIDDLEWAREs
+    AppMiddleWaresInit(app)
+
+
+    //* ROUTEs
+
+    //? index 
+    app.get("/",Authorize,(req: I_Request_Custom, res: I_Response_Custom) => {
+      res.json({status : 200,msg : 'expressjs up!'});
+    });
+
+    //? /api
+    app.use('/api',api_router)
+    
+
+
+    //* EXECUTE
+    app.listen(process.env.PORT, () => {
+      console.log(`[server]: Server is running at http://localhost:${process.env.PORT}`);
+    });
+  })
+  .catch((err)=>{
+    console.log(err)
+  })
+}

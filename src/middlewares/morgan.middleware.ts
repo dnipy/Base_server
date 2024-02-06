@@ -3,7 +3,7 @@ import logger from "../helpers/logger";
 
 const stream = {
     // Use the http severity
-    write: (message) => logger.http(message),
+    write: (message : any) => logger.http(message),
 };
   
 const skip = () => {
@@ -11,7 +11,7 @@ const skip = () => {
     return env !== "development";
 };
   
-export const morganMiddleware = morgan(
+export const morgan_mid = morgan(
     // Define message format string (this is the default one).
     // The message format is made from tokens, and each token is
     // defined inside the Morgan library.
