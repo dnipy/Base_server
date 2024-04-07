@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import cluster from "cluster";
 import os from 'os'
 import { I_Request_Custom , I_Response_Custom } from '@type'
-import { NODE_ENV_CONFIG } from "./configs";
+import { NODE_ENV_CONFIG, redisClient, RedisGetItem } from "./configs";
 import { AppMiddleWaresInit } from "./middlewares"
 import api_router from "./routes/api";
 import { Authorize } from "./middlewares/authorize.middleware";
@@ -22,10 +22,11 @@ if (cluster.isPrimary) {
 } else {
   NODE_ENV_CONFIG()
   .then(()=>{
+    console.log(process.env.NODE_ENV)
     const app: Express = express();
 
 
-    //* CONFIGs AND MIDDLEWAREs
+    //* CONFIGs AND MIDDLEWAREs (Global middlewares)
     AppMiddleWaresInit(app)
 
 
@@ -39,10 +40,12 @@ if (cluster.isPrimary) {
     //? /api
     app.use('/api',api_router)
     
-
+    RedisGetItem('key').then(k=>{
+      console.log(k)
+    })
 
     //* EXECUTE
-    app.listen(process.env.PORT, () => {
+    app.listen(process.env.PORT || 3002, () => {
       console.log(`[server]: Server is running at http://localhost:${process.env.PORT}`);
     });
   })

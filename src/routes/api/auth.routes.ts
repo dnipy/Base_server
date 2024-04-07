@@ -12,7 +12,7 @@ const UserAddSchema = Joi.object({
 const router = Router();
 
 router.get('/',(req,res)=>{
-    return res.json({method : 'get',route : '/'})
+    return res.json({method : 'get',route : '/auth'})
 })
 
 router.get('/:user_id',(req,res)=>{
