@@ -12,11 +12,12 @@
     "dev": "nodemon",
     "dev:start": "NODE_ENV=production ts-node src/index.ts",
     "db:pull": "npx primsa pull",
-    "redis-run" : "docker run --name RedisBaseServer -d redis",
     "db:migrate_dev": "dotenv -e ./src/env/development/.env.development  npx prisma migrate dev",
     "db:studio": "npx prisma studio",
     "docker:kc": "docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak",
-    "docker:postgresql": "docker run -d --name PostgresqlBaseServer -v pg_data:/var/lib/postgresql/data -e POSTGRES_DB=testdb -e POSTGRES_PASSWORD=testpass1234 -e POSTGRES_USER=postgres -p \"5432:5432\" postgres"
+    "docker:postgresql": "docker run -d --name PostgresqlBaseServer -v pg_data:/var/lib/postgresql/data -e POSTGRES_DB=testdb -e POSTGRES_PASSWORD=testpass1234 -e POSTGRES_USER=postgres -p \"5432:5432\" postgres",
+    "redis-run" : "docker run --name RedisBaseServer -p 6379:6379 -d redis",
+    "docker-compose" : "docker-compose up --build -d"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

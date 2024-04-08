@@ -1,7 +1,19 @@
 import * as redis from 'redis'
 
-const redisClient = redis.createClient()
+const redisClient = redis.createClient({
+    url : 
+        process.env.NODE_ENV === 'production'
+            ? 
+                `redis://${process.env.REDIS_HOST || 'redis'}:${process.env.REDIS_PORT || 6379}`
+            :
+                undefined
+})
 
+console.log({
+    host : process.env.REDIS_HOST,
+    port : process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : undefined
+
+})
 redisClient.connect()
     .then(()=>console.log('redis is ready'))
     .catch(()=>console.log('connection to redis failure'))
