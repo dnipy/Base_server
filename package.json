@@ -7,17 +7,15 @@
   "author": "dnipy@protonmail.com",
   "license": "MIT",
   "scripts": {
-    "build": "npx tsc",
     "start": "NODE_ENV=production node dist/index.js",
-    "dev": "nodemon",
     "dev:start": "NODE_ENV=production ts-node src/index.ts",
+    "dev": "nodemon",
+    "build": "npx tsc",
     "db:pull": "npx primsa pull",
     "db:migrate_dev": "dotenv -e ./src/env/development/.env.development  npx prisma migrate dev",
     "db:studio": "npx prisma studio",
-    "docker:kc": "docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak",
-    "docker:postgresql": "docker run -d --name PostgresqlBaseServer -v pg_data:/var/lib/postgresql/data -e POSTGRES_DB=testdb -e POSTGRES_PASSWORD=testpass1234 -e POSTGRES_USER=postgres -p \"5432:5432\" postgres",
-    "redis-run" : "docker run --name RedisBaseServer -p 6379:6379 -d redis",
-    "docker-compose" : "docker-compose up --build -d"
+    "compose-prod" : "docker-compose up --build -d",
+    "compose-dev" : "docker-compose -f docker-compose-dev.yml up --build -d"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
