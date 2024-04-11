@@ -16,7 +16,7 @@ console.log({
 })
 redisClient.connect()
     .then(()=>console.log('redis is ready'))
-    .catch(()=>console.log('connection to redis failure'))
+    .catch(()=>console.log('connection to redis failed'))
 
 // Handle errors
 redisClient.on('error', err => {

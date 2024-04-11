@@ -10,9 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id  Int @unique @default(autoincrement())
   name String? @unique
-  password String?
+  email String? @unique
+  phone String? @unique
+  password String? 
+  avatar String?
+  verified Boolean @default(false)
   CreateDate DateTime @default(now())
-} 
+}
+
+
+model Base64File {
+  id  Int @unique @default(autoincrement())
+  name String?
+  content_type String
+  content String
+  CreateDate DateTime @default(now())
+}
